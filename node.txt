@@ -1,0 +1,29 @@
+https://www.youtube.com/watch?v=5NASM_uQBds
+
+git clone --config lfs.fetchexclude="*.zip" https:git
+
+
+import {applyMiddleware, combineReducers, createStore} from 'redux';
+import userReducer from './userReducer';
+import {persistReducer, persistStore} from 'redux-persist';
+import storage from '@react-native-async-storage/async-storage';
+import {thunk} from 'redux-thunk';
+import ProductReducer from '../components/slices/productSlice';
+import authReducer from '../components/slices/authSlice';
+import {configureStore} from '@reduxjs/toolkit'
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  blacklist: ['productData']
+};
+
+const rootReducer = combineReducers({
+  userData: persistReducer(persistConfig, userReducer),
+  productData: persistReducer(persistConfig, ProductReducer),
+  authoData: persistReducer(persistConfig, authReducer),
+});
+
+export const store = createStore(rootReducer, applyMiddleware(thunk));
+export const persistor = persistStore(store);
+export type RootState = ReturnType<typeof rootReducer>;
